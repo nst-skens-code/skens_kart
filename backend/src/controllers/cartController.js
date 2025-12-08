@@ -99,10 +99,18 @@ export const addToCart = async (req, res) => {
 
         let cartItem;
         if (existingItem) {
+            const newQuantity = existingItem.quantity + parseInt(quantity);
+            if (newQuantity > product.inventoryCount) {
+                return res.status(400).json({
+                    success: false,
+                    error: `Insufficient inventory. Only ${product.inventoryCount} available.`
+                });
+            }
+
             cartItem = await prisma.cartItem.update({
                 where: { id: existingItem.id },
                 data: {
-                    quantity: existingItem.quantity + parseInt(quantity)
+                    quantity: newQuantity
                 },
                 include: {
                     product: {
@@ -113,6 +121,13 @@ export const addToCart = async (req, res) => {
                 }
             });
         } else {
+            if (quantity > product.inventoryCount) {
+                return res.status(400).json({
+                    success: false,
+                    error: `Insufficient inventory. Only ${product.inventoryCount} available.`
+                });
+            }
+
             cartItem = await prisma.cartItem.create({
                 data: {
                     cartId: cart.id,
@@ -152,6 +167,26 @@ export const updateCartItem = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 error: 'Valid quantity is required'
+            });
+        }
+
+        // Get current item to check product inventory
+        const currentItem = await prisma.cartItem.findUnique({
+            where: { id: itemId },
+            include: { product: true }
+        });
+
+        if (!currentItem) {
+            return res.status(404).json({
+                success: false,
+                error: 'Cart item not found'
+            });
+        }
+
+        if (quantity > currentItem.product.inventoryCount) {
+            return res.status(400).json({
+                success: false,
+                error: `Insufficient inventory. Only ${currentItem.product.inventoryCount} available.`
             });
         }
 
