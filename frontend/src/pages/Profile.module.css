@@ -131,10 +131,12 @@
 }
 
 .itemImage {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 70px;
     border-radius: var(--radius-sm);
-    object-fit: cover;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px;
 }
 
 .itemName {
