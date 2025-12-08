@@ -1,19 +1,33 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard/ProductCard';
 import styles from './Home.module.css';
 
+const categories = [
+    { id: 'electronics', name: 'Electronics', icon: '🎧' },
+    { id: 'clothing', name: 'Fashion', icon: '👕' },
+    { id: 'home-garden', name: 'Home', icon: '🏠' },
+    { id: 'sports', name: 'Sports', icon: '⚽' },
+    { id: 'books', name: 'Books', icon: '📚' },
+];
+
 const Home = () => {
-    const [featuredProducts, setFeaturedProducts] = useState([]);
+    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchParams] = useSearchParams();
+    const searchQuery = searchParams.get('q');
 
     useEffect(() => {
-        const fetchFeaturedProducts = async () => {
+        const fetchProducts = async () => {
             try {
-                const response = await api.get('/products?limit=8');
-                setFeaturedProducts(response.data.data.products);
+                setLoading(true);
+                const params = {};
+                if (searchQuery) params.q = searchQuery;
+
+                const response = await api.get('/products', { params });
+                setProducts(response.data.data.products);
             } catch (error) {
                 console.error('Failed to fetch products:', error);
             } finally {
@@ -21,111 +35,97 @@ const Home = () => {
             }
         };
 
-        fetchFeaturedProducts();
-    }, []);
+        fetchProducts();
+    }, [searchQuery]);
 
-    const features = [
-        {
-            icon: '🚚',
-            title: 'Free Shipping',
-            description: 'Free shipping on orders over $50'
-        },
-        {
-            icon: '🔒',
-            title: 'Secure Payment',
-            description: 'Your payment information is safe'
-        },
-        {
-            icon: '↩️',
-            title: 'Easy Returns',
-            description: '30-day return policy'
-        },
-        {
-            icon: '💬',
-            title: '24/7 Support',
-            description: 'Dedicated customer support'
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
         }
-    ];
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1
+        }
+    };
 
     return (
-        <div>
-            {/* Hero Section */}
-            <section className={styles.hero}>
-                <div className={styles.heroBackground} />
-                <motion.div
-                    className={styles.heroContent}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                >
-                    <h1 className={styles.heroTitle}>
-                        Welcome to SkensKart
-                    </h1>
-                    <p className={styles.heroSubtitle}>
-                        Discover amazing products at unbeatable prices. Shop the latest trends and enjoy a premium shopping experience.
-                    </p>
-                    <Link to="/products" className={styles.heroCTA}>
-                        <span>Shop Now</span>
-                        <span>→</span>
-                    </Link>
-                </motion.div>
-            </section>
-
-            {/* Featured Products */}
-            <section className={styles.section}>
-                <div className="container">
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Featured Products</h2>
-                        <Link to="/products" className={styles.viewAll}>
-                            <span>View All</span>
-                            <span>→</span>
-                        </Link>
-                    </div>
-
-                    {loading ? (
-                        <div className={styles.loading}>Loading products...</div>
-                    ) : (
-                        <motion.div
-                            className={styles.productGrid}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                        >
-                            {featuredProducts.map((product, index) => (
-                                <motion.div
-                                    key={product.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                                >
-                                    <ProductCard product={product} />
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    )}
-                </div>
-            </section>
-
-            {/* Features */}
-            <section className={styles.section}>
-                <div className="container">
-                    <div className={styles.features}>
-                        {features.map((feature, index) => (
-                            <motion.div
-                                key={index}
-                                className={styles.feature}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-                                whileHover={{ scale: 1.05 }}
-                            >
-                                <div className={styles.featureIcon}>{feature.icon}</div>
-                                <h3 className={styles.featureTitle}>{feature.title}</h3>
-                                <p className={styles.featureDescription}>{feature.description}</p>
-                            </motion.div>
+        <div className={styles.container}>
+            {!searchQuery && (
+                <>
+                    <div className={styles.categoryStrip}>
+                        {categories.map((cat) => (
+                            <div key={cat.id} className={styles.categoryItem}>
+                                <div className={styles.categoryIcon}>{cat.icon}</div>
+                                <span className={styles.categoryName}>{cat.name}</span>
+                            </div>
                         ))}
                     </div>
+
+                    <motion.section
+                        className={styles.hero}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <div className={styles.heroBackground}></div>
+                        <div className={styles.heroContent}>
+                            <motion.h1
+                                className={styles.heroTitle}
+                                initial={{ scale: 0.9 }}
+                                animate={{ scale: 1 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                            >
+                                NEXT GEN <br /> SHOPPING
+                            </motion.h1>
+                            <p className={styles.heroSubtitle}>
+                                Experience the future of e-commerce with our premium collection of tech, fashion, and more.
+                            </p>
+                            <button className={styles.heroCTA}>
+                                Explore Now
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </button>
+                        </div>
+                    </motion.section>
+                </>
+            )}
+
+            <section className={styles.section}>
+                <div className={styles.sectionHeader}>
+                    <h2 className={styles.sectionTitle}>
+                        {searchQuery ? `Search Results for "${searchQuery}"` : 'Trending Now'}
+                    </h2>
+                    {!searchQuery && (
+                        <button className={styles.viewAll}>
+                            View All
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    )}
                 </div>
+
+                {loading ? (
+                    <div className={styles.loading}>Loading...</div>
+                ) : (
+                    <motion.div
+                        className={styles.productGrid}
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        {products.map((product) => (
+                            <motion.div key={product.id} variants={itemVariants}>
+                                <ProductCard product={product} />
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                )}
             </section>
         </div>
     );

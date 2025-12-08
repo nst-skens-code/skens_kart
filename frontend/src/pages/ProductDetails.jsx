@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import { formatPrice } from '../utils/currency';
 import api from '../utils/api';
 import styles from './ProductDetails.module.css';
 
@@ -41,7 +42,6 @@ const ProductDetails = () => {
         try {
             setAdding(true);
             await addToCart(product.id, 1);
-            // Optional: Show success toast
         } catch (err) {
             console.error('Failed to add to cart:', err);
         } finally {
@@ -68,7 +68,16 @@ const ProductDetails = () => {
                     <div className={styles.category}>{product.category?.name}</div>
                     <h1 className={styles.title}>{product.title}</h1>
                     <div className={styles.price}>
-                        ${(product.priceCents / 100).toFixed(2)}
+                        {formatPrice(product.priceCents)}
+                    </div>
+
+                    <div className={styles.offers}>
+                        <h3 className={styles.offersTitle}>Available Offers</h3>
+                        <ul className={styles.offersList}>
+                            <li>🏷️ <strong>Bank Offer</strong> 5% Unlimited Cashback on Axis Bank Credit Card</li>
+                            <li>🏷️ <strong>Special Price</strong> Get extra 10% off (price inclusive of discount)</li>
+                            <li>🏷️ <strong>Partner Offer</strong> Sign up for SkensKart Pay Later and get ₹500 Gift Card</li>
+                        </ul>
                     </div>
 
                     <p className={styles.description}>{product.description}</p>

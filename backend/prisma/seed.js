@@ -21,8 +21,8 @@ async function fetchBooksFromAPI() {
 
         return data.items.map(item => {
             const info = item.volumeInfo;
-            // Generate a random price between $15 and $60
-            const price = Math.floor(Math.random() * 4500) + 1500;
+            // Generate a random price between ₹299 and ₹1499 (in paise)
+            const price = (Math.floor(Math.random() * 1200) + 299) * 100;
 
             // Create a unique slug
             let slug = (info.title || 'book')
@@ -115,13 +115,13 @@ async function main() {
     }
     console.log('✅ Categories created');
 
-    // Create hardcoded products
+    // Create hardcoded products with INR prices (Paise)
     const hardcodedProducts = [
         {
             title: 'Wireless Bluetooth Headphones',
             slug: 'wireless-bluetooth-headphones',
             description: 'Premium noise-cancelling headphones with 30-hour battery life and superior sound quality.',
-            priceCents: 12999,
+            priceCents: 249900, // ₹2,499
             inventoryCount: 50,
             categorySlug: 'electronics',
             images: [
@@ -132,7 +132,7 @@ async function main() {
             title: 'Smart Watch Pro',
             slug: 'smart-watch-pro',
             description: 'Advanced fitness tracking, heart rate monitoring, and smartphone notifications.',
-            priceCents: 29999,
+            priceCents: 499900, // ₹4,999
             inventoryCount: 30,
             categorySlug: 'electronics',
             images: [
@@ -143,7 +143,7 @@ async function main() {
             title: 'Premium Cotton T-Shirt',
             slug: 'premium-cotton-tshirt',
             description: 'Soft, breathable 100% organic cotton t-shirt. Available in multiple colors.',
-            priceCents: 2499,
+            priceCents: 49900, // ₹499
             inventoryCount: 100,
             categorySlug: 'clothing',
             images: [
@@ -154,7 +154,7 @@ async function main() {
             title: 'Designer Jeans',
             slug: 'designer-jeans',
             description: 'Classic fit denim jeans with premium stitching and comfortable stretch fabric.',
-            priceCents: 7999,
+            priceCents: 199900, // ₹1,999
             inventoryCount: 75,
             categorySlug: 'clothing',
             images: [
@@ -165,7 +165,7 @@ async function main() {
             title: 'Ergonomic Office Chair',
             slug: 'ergonomic-office-chair',
             description: 'Adjustable lumbar support, breathable mesh back, and premium cushioning.',
-            priceCents: 34999,
+            priceCents: 899900, // ₹8,999
             inventoryCount: 20,
             categorySlug: 'home-garden',
             images: [
@@ -176,7 +176,7 @@ async function main() {
             title: 'Ceramic Plant Pot Set',
             slug: 'ceramic-plant-pot-set',
             description: 'Set of 3 handcrafted ceramic pots with drainage holes. Perfect for succulents.',
-            priceCents: 3999,
+            priceCents: 79900, // ₹799
             inventoryCount: 60,
             categorySlug: 'home-garden',
             images: [
@@ -187,7 +187,7 @@ async function main() {
             title: 'Yoga Mat Premium',
             slug: 'yoga-mat-premium',
             description: 'Non-slip, eco-friendly yoga mat with extra cushioning and carrying strap.',
-            priceCents: 4999,
+            priceCents: 89900, // ₹899
             inventoryCount: 45,
             categorySlug: 'sports',
             images: [
@@ -198,7 +198,7 @@ async function main() {
             title: 'Running Shoes Ultra',
             slug: 'running-shoes-ultra',
             description: 'Lightweight running shoes with responsive cushioning and breathable mesh upper.',
-            priceCents: 11999,
+            priceCents: 349900, // ₹3,499
             inventoryCount: 55,
             categorySlug: 'sports',
             images: [
@@ -209,7 +209,7 @@ async function main() {
             title: '4K Webcam Pro',
             slug: '4k-webcam-pro',
             description: 'Crystal clear 4K video calls with auto-focus and built-in noise-cancelling microphone.',
-            priceCents: 8999,
+            priceCents: 449900, // ₹4,499
             inventoryCount: 35,
             categorySlug: 'electronics',
             images: [
@@ -220,7 +220,7 @@ async function main() {
             title: 'Mechanical Keyboard RGB',
             slug: 'mechanical-keyboard-rgb',
             description: 'Premium mechanical switches with customizable RGB lighting and programmable keys.',
-            priceCents: 14999,
+            priceCents: 599900, // ₹5,999
             inventoryCount: 40,
             categorySlug: 'electronics',
             images: [
@@ -231,7 +231,7 @@ async function main() {
             title: 'Leather Jacket Classic',
             slug: 'leather-jacket-classic',
             description: 'Genuine leather jacket with quilted lining and multiple pockets.',
-            priceCents: 24999,
+            priceCents: 699900, // ₹6,999
             inventoryCount: 25,
             categorySlug: 'clothing',
             images: [
@@ -242,7 +242,7 @@ async function main() {
             title: 'Sneakers Retro Style',
             slug: 'sneakers-retro-style',
             description: 'Classic retro design with modern comfort technology and durable construction.',
-            priceCents: 8999,
+            priceCents: 299900, // ₹2,999
             inventoryCount: 65,
             categorySlug: 'clothing',
             images: [
@@ -253,7 +253,7 @@ async function main() {
             title: 'Standing Desk Adjustable',
             slug: 'standing-desk-adjustable',
             description: 'Electric height-adjustable desk with memory presets and cable management.',
-            priceCents: 49999,
+            priceCents: 2499900, // ₹24,999
             inventoryCount: 15,
             categorySlug: 'home-garden',
             images: [
@@ -264,7 +264,7 @@ async function main() {
             title: 'LED Desk Lamp',
             slug: 'led-desk-lamp',
             description: 'Adjustable brightness and color temperature with USB charging port.',
-            priceCents: 5999,
+            priceCents: 149900, // ₹1,499
             inventoryCount: 50,
             categorySlug: 'home-garden',
             images: [
@@ -275,7 +275,7 @@ async function main() {
             title: 'Resistance Bands Set',
             slug: 'resistance-bands-set',
             description: 'Set of 5 resistance bands with different strength levels and carrying bag.',
-            priceCents: 2999,
+            priceCents: 69900, // ₹699
             inventoryCount: 70,
             categorySlug: 'sports',
             images: [
@@ -286,7 +286,7 @@ async function main() {
             title: 'Water Bottle Insulated',
             slug: 'water-bottle-insulated',
             description: 'Stainless steel vacuum insulated bottle keeps drinks cold for 24 hours.',
-            priceCents: 3499,
+            priceCents: 99900, // ₹999
             inventoryCount: 85,
             categorySlug: 'sports',
             images: [
@@ -313,7 +313,11 @@ async function main() {
 
         await prisma.product.upsert({
             where: { slug: product.slug },
-            update: {},
+            update: {
+                // Force update price and description if they changed
+                priceCents: productData.priceCents,
+                description: productData.description
+            },
             create: {
                 ...productData,
                 categoryId: createdCategories[categorySlug].id,

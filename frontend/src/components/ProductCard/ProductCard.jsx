@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { formatPrice } from '../../utils/currency';
 import styles from './ProductCard.module.css';
 
 const ProductCard = ({ product }) => {
@@ -9,88 +10,51 @@ const ProductCard = ({ product }) => {
     const { addToCart } = useCart();
     const { isAuthenticated } = useAuth();
 
-    const formatPrice = (cents) => {
-        return `$${(cents / 100).toFixed(2)}`;
-    };
-
     const handleAddToCart = async (e) => {
         e.stopPropagation();
-
         if (!isAuthenticated) {
             navigate('/login');
             return;
         }
-
-        try {
-            await addToCart(product.id, 1);
-        } catch (error) {
-            console.error('Failed to add to cart:', error);
-        }
+        await addToCart(product.id, 1);
     };
-
-    const handleCardClick = () => {
-        navigate(`/products/${product.id}`);
-    };
-
-    const getStockStatus = () => {
-        if (product.inventoryCount === 0) return { text: 'Out of stock', className: styles.out };
-        if (product.inventoryCount < 10) return { text: `Only ${product.inventoryCount} left`, className: styles.low };
-        return { text: 'In stock', className: '' };
-    };
-
-    const stockStatus = getStockStatus();
 
     return (
-        <motion.div
-            className={styles.card}
-            onClick={handleCardClick}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
-        >
+        <div className={styles.card} onClick={() => navigate(`/products/${product.id}`)}>
             <div className={styles.imageContainer}>
                 <img
-                    src={product.images?.[0]?.url || 'https://via.placeholder.com/400'}
-                    alt={product.images?.[0]?.altText || product.title}
+                    src={product.images[0]?.url || 'https://via.placeholder.com/300'}
+                    alt={product.title}
                     className={styles.image}
                 />
-                {product.category && (
-                    <div className={styles.badge}>{product.category.name}</div>
+                {product.inventoryCount < 5 && product.inventoryCount > 0 && (
+                    <span className={styles.badge}>Low Stock</span>
+                )}
+                {product.inventoryCount === 0 && (
+                    <span className={styles.badge} style={{ background: 'var(--color-error)' }}>Out of Stock</span>
                 )}
             </div>
 
             <div className={styles.content}>
-                {product.category && (
-                    <div className={styles.category}>{product.category.name}</div>
-                )}
-
+                <div className={styles.category}>{product.category?.name}</div>
                 <h3 className={styles.title}>{product.title}</h3>
-
                 <p className={styles.description}>{product.description}</p>
 
                 <div className={styles.footer}>
-                    <div>
-                        <div className={styles.price}>{formatPrice(product.priceCents)}</div>
-                        <div className={`${styles.stock} ${stockStatus.className}`}>
-                            {stockStatus.text}
-                        </div>
+                    <div className={styles.price}>
+                        {formatPrice(product.priceCents)}
                     </div>
-
-                    {product.inventoryCount > 0 && (
-                        <motion.button
-                            className={styles.addButton}
-                            onClick={handleAddToCart}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <span>🛒</span>
-                            <span>Add</span>
-                        </motion.button>
-                    )}
+                    <button
+                        className={styles.addButton}
+                        onClick={handleAddToCart}
+                        disabled={product.inventoryCount === 0}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Add
+                    </button>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 

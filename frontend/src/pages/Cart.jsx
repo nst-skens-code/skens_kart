@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import { formatPrice } from '../utils/currency';
 import api from '../utils/api';
 import styles from './Cart.module.css';
 import { useState } from 'react';
@@ -65,7 +66,7 @@ const Cart = () => {
                             <div className={styles.itemInfo}>
                                 <h3 className={styles.itemName}>{item.product.title}</h3>
                                 <div className={styles.itemPrice}>
-                                    ${(item.unitPriceCents / 100).toFixed(2)}
+                                    {formatPrice(item.unitPriceCents)}
                                 </div>
 
                                 <div className={styles.quantityControls}>
@@ -94,7 +95,7 @@ const Cart = () => {
                             </div>
 
                             <div className={styles.itemTotal}>
-                                ${(item.unitPriceCents * item.quantity / 100).toFixed(2)}
+                                {formatPrice(item.unitPriceCents * item.quantity)}
                             </div>
                         </div>
                     ))}
@@ -105,7 +106,7 @@ const Cart = () => {
 
                     <div className={styles.summaryRow}>
                         <span>Subtotal</span>
-                        <span>${(cart.totalCents / 100).toFixed(2)}</span>
+                        <span>{formatPrice(cart.totalCents)}</span>
                     </div>
 
                     <div className={styles.summaryRow}>
@@ -115,7 +116,7 @@ const Cart = () => {
 
                     <div className={styles.totalRow}>
                         <span>Total</span>
-                        <span>${(cart.totalCents / 100).toFixed(2)}</span>
+                        <span>{formatPrice(cart.totalCents)}</span>
                     </div>
 
                     <button

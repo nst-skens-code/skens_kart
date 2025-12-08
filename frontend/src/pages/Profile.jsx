@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { formatPrice } from '../utils/currency';
 import api from '../utils/api';
 import styles from './Profile.module.css';
 
@@ -79,12 +80,12 @@ const Profile = () => {
                                                     <div>
                                                         <div className={styles.itemName}>{item.product.title}</div>
                                                         <div className={styles.itemMeta}>
-                                                            Qty: {item.quantity} × ${(item.unitPriceCents / 100).toFixed(2)}
+                                                            Qty: {item.quantity} × {formatPrice(item.unitPriceCents)}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className={styles.itemTotal}>
-                                                    ${(item.unitPriceCents * item.quantity / 100).toFixed(2)}
+                                                    {formatPrice(item.unitPriceCents * item.quantity)}
                                                 </div>
                                             </div>
                                         ))}
@@ -94,7 +95,7 @@ const Profile = () => {
                                 <div className={styles.orderFooter}>
                                     <span className={styles.totalLabel}>Total Amount</span>
                                     <span className={styles.totalAmount}>
-                                        ${(order.totalCents / 100).toFixed(2)}
+                                        {formatPrice(order.totalCents)}
                                     </span>
                                 </div>
                             </div>

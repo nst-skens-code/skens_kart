@@ -75,6 +75,40 @@
     margin-bottom: var(--space-2xl);
 }
 
+.offers {
+    margin-bottom: var(--space-xl);
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+}
+
+.offersTitle {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-md);
+    color: var(--color-text-primary);
+}
+
+.offersList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.offersList li {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+}
+
+.offersList strong {
+    color: var(--color-primary-light);
+}
+
 .actions {
     margin-top: auto;
     display: flex;
