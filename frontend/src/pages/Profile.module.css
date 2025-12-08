@@ -1,0 +1,193 @@
+.container {
+    padding: var(--space-3xl) var(--space-lg);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.header {
+    margin-bottom: var(--space-3xl);
+    text-align: center;
+}
+
+.title {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-sm);
+    background: linear-gradient(135deg, #fff, var(--color-primary-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.email {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lg);
+}
+
+.section {
+    margin-bottom: var(--space-3xl);
+}
+
+.sectionTitle {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.ordersList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.orderCard {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-base);
+}
+
+.orderCard:hover {
+    border-color: var(--color-primary-light);
+    box-shadow: var(--shadow-md);
+}
+
+.orderHeader {
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.orderId {
+    font-family: monospace;
+    color: var(--color-text-secondary);
+}
+
+.orderDate {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-sm);
+}
+
+.orderStatus {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+}
+
+.statusPending {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+}
+
+.statusProcessing {
+    background: rgba(33, 150, 243, 0.2);
+    color: #2196f3;
+}
+
+.statusShipped {
+    background: rgba(156, 39, 176, 0.2);
+    color: #9c27b0;
+}
+
+.statusDelivered {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+}
+
+.statusCancelled {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+.orderBody {
+    padding: var(--space-lg);
+}
+
+.orderItems {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.orderItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.itemInfo {
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+}
+
+.itemImage {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+}
+
+.itemName {
+    font-weight: var(--font-weight-medium);
+}
+
+.itemMeta {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.orderFooter {
+    padding: var(--space-lg);
+    border-top: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.totalLabel {
+    color: var(--color-text-secondary);
+}
+
+.totalAmount {
+    color: var(--color-primary-light);
+    font-size: var(--font-size-xl);
+}
+
+.emptyState {
+    text-align: center;
+    padding: var(--space-3xl);
+    color: var(--color-text-secondary);
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+}
+
+.loading {
+    text-align: center;
+    padding: var(--space-3xl);
+    font-size: var(--font-size-xl);
+    color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+    .orderHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+
+    .orderFooter {
+        justify-content: space-between;
+    }
+}
