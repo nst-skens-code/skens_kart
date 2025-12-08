@@ -2,21 +2,10 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import styles from './Header.module.css';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 
 const Header = () => {
     const { user, logout, isAuthenticated } = useAuth();
     const { cartItemCount } = useCart();
-    const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (searchQuery.trim()) {
-            navigate(`/?q=${encodeURIComponent(searchQuery)}`);
-        }
-    };
 
     return (
         <header className={styles.header}>
@@ -24,19 +13,6 @@ const Header = () => {
                 <Link to="/" className={styles.logo}>
                     SkensKart
                 </Link>
-
-                <form onSubmit={handleSearch} className={styles.searchForm}>
-                    <input
-                        type="text"
-                        placeholder="Search for products, brands and more"
-                        className={styles.searchInput}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                    <button type="submit" className={styles.searchButton}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    </button>
-                </form>
 
                 <nav className={styles.nav}>
                     <Link to="/" className={styles.navLink}>Home</Link>
