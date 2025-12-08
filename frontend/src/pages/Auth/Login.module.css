@@ -53,18 +53,19 @@
 
 .input {
     padding: var(--space-md) var(--space-lg);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    color: var(--color-text-primary);
+    color: white;
     font-size: var(--font-size-base);
     transition: all var(--transition-fast);
 }
 
 .input:focus {
     outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px var(--color-border-focus);
+    border-color: var(--color-primary-light);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px var(--color-primary-glow);
 }
 
 .input::placeholder {
@@ -72,12 +73,14 @@
 }
 
 .error {
-    background: var(--color-error);
-    color: white;
+    background: rgba(220, 38, 38, 0.2);
+    border: 1px solid var(--color-error);
+    color: #ff8888;
     padding: var(--space-md);
     border-radius: var(--radius-md);
     font-size: var(--font-size-sm);
     text-align: center;
+    backdrop-filter: blur(5px);
 }
 
 .submitButton {
@@ -89,11 +92,33 @@
     font-weight: var(--font-weight-semibold);
     transition: all var(--transition-base);
     margin-top: var(--space-md);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+.submitButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.submitButton:hover::not(:disabled)::before {
+    opacity: 1;
 }
 
 .submitButton:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-glow);
+    box-shadow: 0 0 30px var(--color-primary-glow), 0 0 60px var(--color-secondary);
 }
 
 .submitButton:active:not(:disabled) {
@@ -101,8 +126,9 @@
 }
 
 .submitButton:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+    filter: grayscale(1);
 }
 
 .divider {
