@@ -46,7 +46,7 @@ model Product {
   id             String          @id @default(uuid())
   title          String
   slug           String          @unique
-  description    String
+  description    String          @db.Text
   priceCents     Int             @map("price_cents")
   currency       String          @default("USD")
   inventoryCount Int             @map("inventory_count")

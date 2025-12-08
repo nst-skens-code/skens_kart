@@ -3,6 +3,58 @@ import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
+async function fetchBooksFromAPI() {
+    try {
+        console.log('📚 Fetching books from Google Books API...');
+        const response = await fetch('https://www.googleapis.com/books/v1/volumes?q=subject:programming&maxResults=20&langRestrict=en');
+
+        if (!response.ok) {
+            throw new Error(`API responded with status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.items) {
+            console.log('⚠️ No books found from API');
+            return [];
+        }
+
+        return data.items.map(item => {
+            const info = item.volumeInfo;
+            // Generate a random price between $15 and $60
+            const price = Math.floor(Math.random() * 4500) + 1500;
+
+            // Create a unique slug
+            let slug = (info.title || 'book')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '');
+
+            // Append random string to ensure uniqueness
+            slug = `${slug}-${Math.random().toString(36).substring(2, 7)}`;
+
+            // Get high quality image if available, otherwise thumbnail
+            const imageUrl = info.imageLinks?.thumbnail?.replace('http:', 'https:') ||
+                'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800';
+
+            return {
+                title: info.title || 'Untitled Book',
+                slug: slug,
+                description: info.description || 'No description available for this book.',
+                priceCents: price,
+                inventoryCount: Math.floor(Math.random() * 50) + 10,
+                categorySlug: 'books',
+                images: [
+                    { url: imageUrl, altText: info.title || 'Book cover' }
+                ]
+            };
+        });
+    } catch (error) {
+        console.error('❌ Error fetching books:', error);
+        return [];
+    }
+}
+
 async function main() {
     console.log('🌱 Starting database seed...');
 
@@ -63,8 +115,8 @@ async function main() {
     }
     console.log('✅ Categories created');
 
-    // Create products
-    const products = [
+    // Create hardcoded products
+    const hardcodedProducts = [
         {
             title: 'Wireless Bluetooth Headphones',
             slug: 'wireless-bluetooth-headphones',
@@ -154,28 +206,6 @@ async function main() {
             ]
         },
         {
-            title: 'The Art of Programming',
-            slug: 'art-of-programming',
-            description: 'Comprehensive guide to modern software development practices and patterns.',
-            priceCents: 4999,
-            inventoryCount: 80,
-            categorySlug: 'books',
-            images: [
-                { url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800', altText: 'Programming book' }
-            ]
-        },
-        {
-            title: 'Mindfulness & Meditation',
-            slug: 'mindfulness-meditation',
-            description: 'Practical guide to developing a daily meditation practice for stress relief.',
-            priceCents: 2999,
-            inventoryCount: 90,
-            categorySlug: 'books',
-            images: [
-                { url: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800', altText: 'Meditation book' }
-            ]
-        },
-        {
             title: '4K Webcam Pro',
             slug: '4k-webcam-pro',
             description: 'Crystal clear 4K video calls with auto-focus and built-in noise-cancelling microphone.',
@@ -262,33 +292,25 @@ async function main() {
             images: [
                 { url: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800', altText: 'Blue water bottle' }
             ]
-        },
-        {
-            title: 'Cookbook Masterclass',
-            slug: 'cookbook-masterclass',
-            description: 'Professional cooking techniques and recipes from world-renowned chefs.',
-            priceCents: 3999,
-            inventoryCount: 60,
-            categorySlug: 'books',
-            images: [
-                { url: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800', altText: 'Cookbook with food' }
-            ]
-        },
-        {
-            title: 'Science Fiction Collection',
-            slug: 'scifi-collection',
-            description: 'Box set of classic science fiction novels from legendary authors.',
-            priceCents: 6999,
-            inventoryCount: 40,
-            categorySlug: 'books',
-            images: [
-                { url: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800', altText: 'Stack of books' }
-            ]
         }
     ];
 
-    for (const product of products) {
+    // Fetch books from API
+    const apiBooks = await fetchBooksFromAPI();
+    console.log(`📚 Fetched ${apiBooks.length} books from API`);
+
+    // Combine products
+    const allProducts = [...hardcodedProducts, ...apiBooks];
+
+    for (const product of allProducts) {
         const { categorySlug, images, ...productData } = product;
+
+        // Skip if category doesn't exist (shouldn't happen)
+        if (!createdCategories[categorySlug]) {
+            console.warn(`⚠️ Category ${categorySlug} not found for product ${product.title}`);
+            continue;
+        }
+
         await prisma.product.upsert({
             where: { slug: product.slug },
             update: {},
