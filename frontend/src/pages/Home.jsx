@@ -58,10 +58,10 @@ const Home = () => {
                         animate={{ scale: 1 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
                     >
-                        NEXT GEN <br /> SHOPPING
+                        DISCOVER YOUR <br /> NEXT READ
                     </motion.h1>
                     <p className={styles.heroSubtitle}>
-                        Experience the future of e-commerce with our premium collection of tech, fashion, and more.
+                        Explore our curated collection of bestsellers, classics, and hidden gems.
                     </p>
                     <button className={styles.heroCTA}>
                         Explore Now

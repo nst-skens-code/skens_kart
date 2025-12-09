@@ -36,48 +36,53 @@ export const checkout = async (req, res) => {
         // Calculate total
         const totalCents = cart.items.reduce((sum, item) => sum + (item.unitPriceCents * item.quantity), 0);
 
-        // Create order
-        const order = await prisma.order.create({
-            data: {
-                userId: req.user.id,
-                totalCents,
-                status: 'PROCESSING',
-                items: {
-                    create: cart.items.map(item => ({
-                        productId: item.productId,
-                        quantity: item.quantity,
-                        unitPriceCents: item.unitPriceCents
-                    }))
-                }
-            },
-            include: {
-                items: {
-                    include: {
-                        product: {
-                            include: {
-                                images: { take: 1, orderBy: { position: 'asc' } }
+        // Use transaction to ensure data integrity
+        const order = await prisma.$transaction(async (prisma) => {
+            // Create order
+            const newOrder = await prisma.order.create({
+                data: {
+                    userId: req.user.id,
+                    totalCents,
+                    status: 'PROCESSING',
+                    items: {
+                        create: cart.items.map(item => ({
+                            productId: item.productId,
+                            quantity: item.quantity,
+                            unitPriceCents: item.unitPriceCents
+                        }))
+                    }
+                },
+                include: {
+                    items: {
+                        include: {
+                            product: {
+                                include: {
+                                    images: { take: 1, orderBy: { position: 'asc' } }
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
-
-        // Update inventory
-        for (const item of cart.items) {
-            await prisma.product.update({
-                where: { id: item.productId },
-                data: {
-                    inventoryCount: {
-                        decrement: item.quantity
-                    }
-                }
             });
-        }
 
-        // Clear cart
-        await prisma.cartItem.deleteMany({
-            where: { cartId: cart.id }
+            // Update inventory
+            for (const item of cart.items) {
+                await prisma.product.update({
+                    where: { id: item.productId },
+                    data: {
+                        inventoryCount: {
+                            decrement: item.quantity
+                        }
+                    }
+                });
+            }
+
+            // Clear cart
+            await prisma.cartItem.deleteMany({
+                where: { cartId: cart.id }
+            });
+
+            return newOrder;
         });
 
         res.status(201).json({
